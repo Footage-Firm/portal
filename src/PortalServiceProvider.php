@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Storyblocks\Portal\Jobs\EventTeleportationJob;
 
-class TeleportationServiceProvider extends ServiceProvider
+class PortalServiceProvider extends ServiceProvider
 {
     /**
      * Register any other events for your application.
