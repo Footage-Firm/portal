@@ -1,7 +1,7 @@
 <p align="center"><img src="https://i.imgur.com/bJyzdOf.png"></p>
 
 <p align="center">
-<a href="https://travis-ci.org/footage-firm/portal"><img src="https://travis-ci.org/footage-firm/portal.svg" alt="Build Status"></a>
+<a href="https://travis-ci.org/Footage-Firm/portal"><img src="https://travis-ci.org/Footage-Firm/portal.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/footage-firm/portal"><img src="https://poser.pugx.org/footage-firm/portal/d/total.svg" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/footage-firm/portal"><img src="https://poser.pugx.org/footage-firm/portal/v/stable.svg" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/footage-firm/portal"><img src="https://poser.pugx.org/footage-firm/portal/license.svg" alt="License"></a>
