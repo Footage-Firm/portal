@@ -27,9 +27,53 @@ If you are using Laravel 5.5+, there is no need to manually register the service
 ],
 ```
 
+> The package needs to be installed for all projects that need to be able to send or receive events
+
+## How it works
+
+All portal-connected Laravel apps will need to use a central queue for transmitting events, so make sure that [queueing](https://laravel.com/docs/5.5/queues) is configured, and that all connected Laravel apps are using the same queue.
+
 ## Basic Usage
 
-...
+### Sending portal events
+
+Create your [Laravel Events](https://laravel.com/docs/5.5/events) as usual, but make sure to implement the `ShouldTeleport` interface.
+
+**Example:**
+
+```php
+<?php
+
+namespace App\Events;
+
+use Storyblocks\Portal\ShouldTeleport;
+
+class OrderShipped implements ShouldTeleport
+{
+}
+```
+
+The event can triggered as per usual:
+
+```php
+event(new OrderShipped());
+```
+
+The event will automatically be queued up and teleported to any other Portal-enabled Laravel app.
+
+
+## Receiving portal events
+
+Simply define an event listener in `EventServiceProvider` as you usually would with a Laravel app.
+
+**Example:**
+```php
+protected $listen = [
+    'App\Events\OrderShipped' => [
+        'App\Listeners\SendShipmentNotification',
+    ],
+];
+```
 
 ## License
 
