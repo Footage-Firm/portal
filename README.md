@@ -54,6 +54,7 @@ If you're using [Laravel Horizon](https://laravel.com/docs/5.5/horizon), you wil
             'tries' => 3,
         ],
     ],
+    ...
 ```
 
 >**Note:** Queue names need to always be prefixed with `portal-`
