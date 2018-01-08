@@ -33,7 +33,71 @@ If you are using Laravel 5.5+, there is no need to manually register the service
 
 All portal-connected Laravel apps will need to use a central queue for transmitting events, so make sure that [queueing](https://laravel.com/docs/5.5/queues) is configured, and that all connected Laravel apps are using the same queue.
 
+### Configuring queues
+
+Each application that receives events, will need to have a queue and queue worker configured to listen for portal events.
+
+If you're using the [default laravel queueing system](https://laravel.com/docs/5.5/queues#running-the-queue-worker), this can be done by running a worker with the `--queue` parameter like so:
+
+    php artisan queue:work redis --queue=portal-myapp
+
+If you're using [Laravel Horizon](https://laravel.com/docs/5.5/horizon), you will simply need to update the environments configuration, by adding an additional queue to the array like so:
+
+```
+'environments' => [
+    'production' => [
+        'supervisor-1' => [
+            'connection' => 'redis',
+            'queue' => ['default', 'portal-myapp'],
+            'balance' => 'simple',
+            'processes' => 10,
+            'tries' => 3,
+        ],
+    ],
+```
+
+>**Note:** Queue names need to always be prefixed with `portal-`
+
+### Configuring event targets
+
+When a teleportation-eligible event is fired, a custom handler will be executed. This handler is responsible for returning the targets that the events are sent to.
+
+This callback can be configured anywhere you like, but a good starting place would be the `boot()` function in your `AppServiceProvider`
+
+Here's a couple of examples
+
+```php
+// Teleport events to a static list of apps
+Portal::setTeleportationTargetsHandler(function ($eventName) {
+    return [
+        'myapp' // Note: This is the same name as specified in the queue worker above (but without the "portal-" prefix)
+    ];
+});
+
+// Teleport events to a database-defined list of targets
+Portal::setTeleportationTargetsHandler(function ($eventName) {
+    return Server::where('is_active', 1)
+        ->where('hostname', '!=', gethostname()) // Exclude ourselves
+        ->lists('hostname');
+});
+
+// Send certain events to certain targets
+Portal::setTeleportationTargetsHandler(function ($eventName) {
+    if ($eventName === 'SpecialEvent') {
+        return [
+            'myapp',
+            'specialapp'
+        ];
+    } else {
+        return [
+            'myapp';
+        ];
+    }
+});
+```
+
 ## Basic Usage
+
 
 ### Sending portal events
 
@@ -62,7 +126,7 @@ event(new OrderShipped());
 The event will automatically be queued up and teleported to any other Portal-enabled Laravel app.
 
 
-## Receiving portal events
+### Receiving portal events
 
 Simply define an event listener in `EventServiceProvider` as you usually would with a Laravel app.
 
