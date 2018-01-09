@@ -35,6 +35,8 @@ All portal-connected Laravel apps will need to use a central queue for transmitt
 
 ### Configuring queues
 
+>**Warning:** Before you continue, make sure that your default `QUEUE_DRIVER` in `config/queue.php` is NOT set to `sync`, as this will cause an infinite loop for teleported events
+
 Each application that receives events, will need to have a queue and queue worker configured to listen for portal events.
 
 If you're using the [default laravel queueing system](https://laravel.com/docs/5.5/queues#running-the-queue-worker), this can be done by running a worker with the `--queue` parameter like so:
