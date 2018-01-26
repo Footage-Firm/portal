@@ -21,19 +21,22 @@ class PortalServiceProvider extends ServiceProvider
 
     private function subscribeToEvents() {
         Event::listen('*', function (string $eventName, array $data) {
-            if ($this->shouldEventBeTeleported($eventName)) {
-                foreach ($data as $event) {
+            foreach ($data as $event) {
+                if ($this->shouldEventBeTeleported($eventName, $event)) {
                     $this->teleport($eventName, $event);
                 }
             }
         });
     }
 
-    private function shouldEventBeTeleported(string $eventName): bool {
-        return class_exists($eventName) && in_array(ShouldTeleport::class, class_implements($eventName));
+    private function shouldEventBeTeleported(string $eventName, $event): bool {
+        $isTeleportable = class_exists($eventName) && in_array(ShouldTeleport::class, class_implements($eventName));
+        $eventHasBeenTeleported = isset($event->hasBeenTeleported) && $event->hasBeenTeleported === true;
+
+        return $isTeleportable && !$eventHasBeenTeleported;
     }
 
-    public function teleport($eventName, $event) {
+    public function teleport(string $eventName, $event) {
         $targets = Portal::getTargetsForEvent($eventName);
 
         if (!is_array($targets)) {

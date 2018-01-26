@@ -31,6 +31,7 @@ class EventTeleportationJob implements ShouldQueue
     public function handle()
     {
         // Emit event
+        $this->event->hasBeenTeleported = true;
         event($this->event);
     }
 }
