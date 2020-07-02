@@ -36,7 +36,7 @@ class PortalServiceProvider extends ServiceProvider
         return $isTeleportable && !$eventHasBeenTeleported;
     }
 
-    public function teleport(Event $event) {
+    public function teleport($event) {
         $targets = Portal::getTargetsForEvent($event);
 
         if (!is_array($targets)) {
