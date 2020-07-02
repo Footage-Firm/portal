@@ -23,7 +23,7 @@ class PortalServiceProvider extends ServiceProvider
         Event::listen('*', function (string $eventName, array $data) {
             foreach ($data as $event) {
                 if ($this->shouldEventBeTeleported($eventName, $event)) {
-                    $this->teleport($eventName, $event);
+                    $this->teleport($event);
                 }
             }
         });
@@ -36,8 +36,8 @@ class PortalServiceProvider extends ServiceProvider
         return $isTeleportable && !$eventHasBeenTeleported;
     }
 
-    public function teleport(string $eventName, $event) {
-        $targets = Portal::getTargetsForEvent($eventName);
+    public function teleport(Event $event) {
+        $targets = Portal::getTargetsForEvent($event);
 
         if (!is_array($targets)) {
             throw new TeleportationTargetException('The teleportation targets handler needs to return an array of targets');
